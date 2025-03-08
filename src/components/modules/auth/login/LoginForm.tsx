@@ -1,5 +1,6 @@
 "use client";
 
+import ReCAPTCHA from "react-google-recaptcha";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -26,6 +27,10 @@ export default function LoginForm() {
   const {
     formState: { isSubmitting },
   } = form;
+
+  const handleReCaptcha = (value: string | null) => {
+    console.log(value);
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -90,6 +95,14 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
+
+          <div className="mt-3">
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY || ""}
+              onChange={handleReCaptcha}
+              className="mx-auto"
+            />
+          </div>
 
           <Button
             type="submit"
