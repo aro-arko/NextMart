@@ -14,22 +14,32 @@ import { Input } from "@/components/ui/input";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
 import Logo from "@/app/assets/svgs/Logo";
-import { loginUser } from "@/services/AuthService";
+import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "./loginValidation";
+import { useState } from "react";
 
 export default function LoginForm() {
   const form = useForm({
     resolver: zodResolver(loginSchema),
   });
 
+  const [recaptchaStatus, setRecaptchaStatus] = useState(false);
+
   const {
     formState: { isSubmitting },
   } = form;
 
-  const handleReCaptcha = (value: string | null) => {
-    console.log(value);
+  const handleReCaptcha = async (value: string | null) => {
+    try {
+      const res = await reCaptchaTokenVerification(value!);
+      if (res.success) {
+        setRecaptchaStatus(true);
+      }
+    } catch (err: any) {
+      console.error(err);
+    }
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -105,6 +115,7 @@ export default function LoginForm() {
           </div>
 
           <Button
+            disabled={!recaptchaStatus}
             type="submit"
             className="mt-5 w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors"
           >
