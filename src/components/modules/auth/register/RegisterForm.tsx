@@ -21,6 +21,10 @@ export default function RegisterForm() {
     resolver: zodResolver(registrationSchema),
   });
 
+  const password = form.watch("password");
+  const passwordConfirm = form.watch("passwordConfirm");
+  console.log(password, passwordConfirm);
+
   const {
     formState: { isSubmitting },
   } = form;
@@ -30,7 +34,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="border-2 border-gray-300 rounded-xl flex-grow max-w-md w-full p-8 shadow-lg">
+    <div className="border-2 border-gray-300 rounded-xl flex-grow max-w-md w-full p-8 shadow-lg bg-white">
       <div className="flex items-center space-x-4 mb-6">
         <Logo />
         <div>
@@ -41,7 +45,7 @@ export default function RegisterForm() {
         </div>
       </div>
       <Form {...form}>
-        <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="name"
@@ -49,9 +53,14 @@ export default function RegisterForm() {
               <FormItem className="mb-4">
                 <FormLabel className="text-black">Name</FormLabel>
                 <FormControl>
-                  <Input {...field} value={field.value || ""} />
+                  <Input
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Enter your name"
+                    className="text-black"
+                  />
                 </FormControl>
-                <FormMessage className="text-black" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -66,10 +75,11 @@ export default function RegisterForm() {
                     type="email"
                     {...field}
                     value={field.value || ""}
+                    placeholder="Enter your email"
                     className="text-black"
                   />
                 </FormControl>
-                <FormMessage className="text-black" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -80,9 +90,15 @@ export default function RegisterForm() {
               <FormItem className="mb-4">
                 <FormLabel className="text-black">Password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} value={field.value || ""} />
+                  <Input
+                    type="password"
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Enter your password"
+                    className="text-black"
+                  />
                 </FormControl>
-                <FormMessage className="text-black" />
+                <FormMessage className="text-red-500" />
               </FormItem>
             )}
           />
@@ -93,12 +109,26 @@ export default function RegisterForm() {
               <FormItem className="mb-4">
                 <FormLabel className="text-black">Confirm Password</FormLabel>
                 <FormControl>
-                  <Input type="password" {...field} value={field.value || ""} />
+                  <Input
+                    type="password"
+                    {...field}
+                    value={field.value || ""}
+                    placeholder="Confirm your password"
+                    className="text-black"
+                  />
                 </FormControl>
+                {passwordConfirm && password !== passwordConfirm ? (
+                  <FormMessage className="text-red-500">
+                    Password does not match
+                  </FormMessage>
+                ) : (
+                  <FormMessage className="text-red-500" />
+                )}
               </FormItem>
             )}
           />
           <Button
+            disabled={!!passwordConfirm && password !== passwordConfirm}
             type="submit"
             className="mt-5 w-full bg-primary text-white py-2 rounded-lg hover:bg-primary-dark transition-colors"
           >
