@@ -15,6 +15,8 @@ import Link from "next/link";
 import Logo from "@/app/assets/svgs/Logo";
 import { registrationSchema } from "./registerValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { registerUser } from "@/services/AuthService";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
   const form = useForm({
@@ -29,8 +31,18 @@ export default function RegisterForm() {
     formState: { isSubmitting },
   } = form;
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await registerUser(data);
+      if (res.success) {
+        toast.success(res?.message);
+      } else {
+        toast.error(res?.message);
+      }
+      console.log(res);
+    } catch (err: any) {
+      console.error(err);
+    }
   };
 
   return (
